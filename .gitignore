@@ -6,6 +6,7 @@ __pycache__/
 #folders and data
 CSVs
 all_data.csv
+all_data_default.csv
 
 # C extensions
 *.so
