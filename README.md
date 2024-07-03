@@ -1,3 +1,14 @@
+
+# Running the scripts
+
+- Download the GeneratedLabeledFlows dataset from : http://205.174.165.80/CICDataset/CIC-IDS-2017/Dataset/CIC-IDS-2017/CSVs/ 
+- Rename the Dataset folder to CSVs and copy it to the Network-Anomaly-Detection program directory.
+- Create a virtual environment: `python3 -m venv venv`
+- Activate the virtual environment: `source venv/bin/activate`
+- Install the required packages: `pip install -r requirements.txt`
+- Run the notebooks in sequence.
+
+
 # Anomaly-Detection-in-Networks-Using-Machine-Learning
 A thesis submitted for the degree of Master of Science in Computer Networks and Security
 ###### This file gives information on how to use the implementation files of "Anomaly Detection in Networks Using Machine Learning" ( A thesis submitted for the degree of Master of Science in Computer Networks and Security written by Kahraman Kostas )
