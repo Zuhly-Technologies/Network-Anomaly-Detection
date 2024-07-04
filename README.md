@@ -7,6 +7,7 @@
 - Activate the virtual environment: `source venv/bin/activate`
 - Install the required packages: `pip install -r requirements.txt`
 - Run the notebooks in sequence.
+- Sampling size can be set using the sample_dataset() function in the 01_preprocessing.ipynb notebook
 
 
 # Anomaly-Detection-in-Networks-Using-Machine-Learning
