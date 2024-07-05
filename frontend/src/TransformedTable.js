@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import "./TransformedTable.css";
 import { useNavigate } from "react-router-dom";
 import logo from "./zt.png";
-import "./AlertModal.css";
 import config from "./config";
 
 const TransformedTable = () => {
@@ -161,7 +160,7 @@ const TransformedTable = () => {
   };
 
   useEffect(() => {
-    document.title = "Transform Active Table";
+    document.title = "Generate Attack Metrics";
   }, []);
 
   return (
@@ -180,50 +179,7 @@ const TransformedTable = () => {
 
       <nav className="navbar">
         <ul className="nav-list">
-          <li className="nav-item" onClick={() => navigate("/customers")}>
-            Customer Profiles
-          </li>
-          <li className="nav-item" onClick={() => navigate("/terminals")}>
-            Merchant Profiles
-          </li>
-          <li className="nav-item" onClick={() => navigate("/")}>
-            Simulator
-          </li>
           <li className="nav-item">Transformed Table</li>
-          <li className="nav-item" onClick={() => navigate("/results")}>
-            Predictions
-          </li>
-          <li className="nav-item" onClick={() => navigate("/tb_metrics")}>
-            TB-Metrics
-          </li>
-          <li className="nav-item" onClick={() => navigate("/tf_metrics")}>
-            TF-Metrics
-          </li>
-          <li className="nav-item" onClick={() => navigate("/ensemble")}>
-            Ensemble
-          </li>
-          <li className="nav-item" onClick={() => navigate("/summary")}>
-            En-Summary
-          </li>
-          <li className="nav-item" onClick={() => navigate("/deep_learning")}>
-            Train-Model-GSCV
-          </li>
-          <li className="nav-item" onClick={() => navigate("/train_model")}>
-            Train-Model-BSCV
-          </li>
-          <li className="nav-item" onClick={() => navigate("/inference")}>
-            Inference
-          </li>
-          <li className="nav-item" onClick={() => navigate("/autoencoder")}>
-            Autoencoder-Metrics
-          </li>
-          <li
-            // style={{ marginLeft: "1230px" }}
-            className="nav-item"
-            onClick={() => navigate("/archives")}
-          >
-            Archives
-          </li>
         </ul>
       </nav>
 
