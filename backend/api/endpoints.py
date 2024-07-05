@@ -14,6 +14,7 @@ import re
 import random
 import os
 from attack_metrics import AttackMetrics
+from all_metrics import AllMetrics
 
 # Load environment variables from .env file
 load_dotenv()
@@ -29,28 +30,91 @@ connect="postgresql+psycopg2://"+usr+":"+password+"@"+host+":"+port+"/"+database
 
 class GenerateAttackMetrics(Resource):
 
-    def post(self):
+    def get(self):
 
-        return 0
+        try:
+
+            AttackMetrics()
+            return Response(status = 200)
+        
+        except:
+
+            return Response(status = 400)
     
 class GetAttackMetrics(Resource):
 
-    def post(self):
+    def get(self):
 
-        return 0
+        engine = create_engine(connect)
+        connection = engine.connect()
+
+        try:
+        
+            Bot_df= pd.read_sql('SELECT * FROM Bot', engine)
+            DDoS_df= pd.read_sql('SELECT * FROM ddoS', engine)
+            DoS_GoldenEye_df= pd.read_sql('SELECT * FROM dos_goldeneye', engine)
+            DoS_Hulk_df= pd.read_sql('SELECT * FROM dos_hulk', engine)
+            DoS_Slowhttptest_df= pd.read_sql('SELECT * FROM dos_slowhttptest', engine)
+            DoS_slowloris_df= pd.read_sql('SELECT * FROM dos_slowloris', engine)
+            FTP_Patator_df= pd.read_sql('SELECT * FROM ftp_patator', engine)
+            PortScan_df= pd.read_sql('SELECT * FROM portscan', engine)
+            SSH_Patator_df= pd.read_sql('SELECT * FROM ssh_patator', engine)
+
+            connection.close()
+
+            metrics = {
+
+                "Bot": Bot_df.to_dict(orient='records'),
+                "DDoS": DDoS_df.to_dict(orient='records'),
+                "DoS_GoldenEye": DoS_GoldenEye_df.to_dict(orient='records'),
+                "DoS_Hulk": DoS_Hulk_df.to_dict(orient='records'),
+                "DoS_Slowhttptest": DoS_Slowhttptest_df.to_dict(orient='records'),
+                "DoS_slowloris": DoS_slowloris_df.to_dict(orient='records'),
+                "FTP_Patator": FTP_Patator_df.to_dict(orient='records'),
+                "PortScan": PortScan_df.to_dict(orient='records'),
+                "SSH_Patator": SSH_Patator_df.to_dict(orient='records')
+            }
+
+            return metrics, 200
+        
+        except:
+
+            return Response(status = 400)
+
     
 #//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
 class GenerateAllMetrics(Resource):
 
-    def post(self):
+    def get(self):
 
-        return 0
+        try:
+            
+            AllMetrics()
+            return Response(status = 200)
+        
+        except:
+
+            return Response(status = 400)
     
 class GetAllMetrics(Resource):
 
-    def post(self):
+    def get(self):
 
-        return 0
+        engine = create_engine(connect)
+        connection = engine.connect()
+    
+        try:
+            
+            all_data_df= pd.read_sql('SELECT * FROM all_data', engine)
+
+            connection.close()
+
+            return all_data_df.to_dict(orient='records')
+        
+        except:
+
+            return Response(status = 400)
+
 
 

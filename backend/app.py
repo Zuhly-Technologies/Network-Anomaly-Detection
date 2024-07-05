@@ -21,7 +21,13 @@ server_port = os.getenv("SERVER_PORT")
 app = Flask(__name__)
 
 CORS(app, resources={
-    r"/simulator/*": {"origins": "*"},
+
+    r"/generate_attack_metrics": {"origins": "*"},
+    r"/get_attack_metrics": {"origins": "*"},
+
+    r"/generate_all_metrics": {"origins": "*"},
+    r"/get_all_metrics": {"origins": "*"},
+
 })
 
 app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://"+usr+":"+password+"@"+host+":"+port+"/"+database

@@ -45,6 +45,9 @@ def folder(f_name): # this function creates a folder named "results" and "result
     except OSError:
         print("The folder could not be created!")
 
+def format_table_name(name):
+    return name.lower().replace(" ", "_").replace("-", "_")
+
 def AttackMetrics():
 
     folder_name = "./results/"
@@ -164,7 +167,8 @@ def AttackMetrics():
         if results:
             df_results = pd.DataFrame(results, columns=["Attack", "ML algorithm", "accuracy", "Precision", "Recall", "F1-score", "Time"])
             df_results = df_results.round(3)  # Round all values to 3 decimal places
-            df_results.to_sql(j[0:-4], engine, if_exists='replace', index=False)
+            table_name = format_table_name(j[0:-4])  # Format the table name
+            df_results.to_sql(table_name, engine, if_exists='replace', index=False)
 
             with open(result, "a", newline="", encoding="utf-8") as f: # all the values found are saved in the opened file.
                 wrt = csv.writer(f)
@@ -192,3 +196,5 @@ def AttackMetrics():
         print("\n------------------------------------------------------------------------------------------------------\n\n")
 
     print("Total operation time: = ", time.time()- seconds ,"seconds")
+
+
