@@ -1,0 +1,52 @@
+.custom-modal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    /* top: 0;
+    left: 0; */
+    width: 100%;
+    height: 100%;
+    background-color: rgba(139, 139, 139, 0.429);
+    z-index: 1050;
+  }
+  
+  .modal-content {
+    background-color: #fff;
+    padding: 60px;
+    border-radius: 10px;
+    text-align: left;
+    font-size: 20px; 
+  }
+  
+  .close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 20px;
+    color: #555;
+  }
+  
+  .close:hover {
+    color: #000;
+  }
+
+  /* Added styles for the close button */
+.modal-content button {
+    padding: 10px 20px; /* Adjust the padding to increase the button size */
+    font-size: 16px; /* Adjust the font size as needed */
+    background-color: #676767; /* Example background color, you can change it */
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    position: right;
+    /* bottom: 20px;
+    right: 20px; */
+  }
+  
+  .modal-content button:hover {
+    background-color: #4572a0; /* Example hover background color, you can change it */
+  }
+  

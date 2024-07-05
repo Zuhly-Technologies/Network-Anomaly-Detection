@@ -1,0 +1,181 @@
+.App {
+  text-align: left;
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  justify-content: left;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+.download-link {
+  cursor: pointer;
+  color: blue;
+  text-decoration: underline;
+  transition: color 0.3s;
+}
+
+.download-link:hover {
+  color: darkblue;
+}
+
+.download-link:active {
+  color: darkred;
+}
+
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 1rem;
+}
+
+.custom-modal {
+  width: 600px; 
+  height: auto;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.modal-buttons {
+  display: flex; /* Use flex layout */
+  justify-content: center; /* Center-align items horizontally */
+  margin-top: 20px; /* Add space between content and buttons */
+}
+
+
+.modal-button {
+  padding: 10px 20px; /* Adjust the padding for button size */
+  margin: 5px; /* Add margin for spacing between buttons */
+  font-size: 16px; /* Adjust font size as needed */
+}
+
+.narrow-input {
+  width: 100%; 
+  max-width: 300px;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th,
+td {
+  border: 1px solid #ffffff;
+  text-align: left;
+  padding: 8px;
+  font-size: 32px;
+}
+
+th {
+  background-color: rgb(117, 201, 250);
+}
+
+td {
+  background-color: rgb(205, 235, 253);
+}
+
+form {
+  display: flex;
+  gap: 5px;
+}
+
+form td:last-child {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+form * {
+  font-size: 28px;
+}
+
+.form-container {
+  max-width: 2000px;
+  
+}
+
+.narrow-input {
+  width: 98%; 
+  /* max-width: 200px; */
+}
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-row-stream-table {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-row label {
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+.form-row-stream-table label {
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+.generate-button{
+    font-size: 20px; /* Adjust font size as needed */
+    padding: 1px 30px; /* Adjust padding to reduce button height */
+    margin-top: 30px; /* Add some space between button and form inputs */
+  
+}
+
+.stream-button {
+  font-size: 20px; /* Adjust font size as needed */
+  padding: 1px 30px; /* Adjust padding to reduce button height */
+  margin-top: 25px; /* Add some space between button and form inputs */
+}
+
+.navbar {
+  background-color: #1f4a8a;
+  padding: 10px;
+}
+
+.nav-list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+.nav-item {
+  color: #fff;
+  margin-right: 20px;
+  cursor: pointer;
+  font-size: 1.5em;
+}
+
+.nav-item:hover {
+  text-decoration: underline;
+}
+
+.table-header {
+  max-height: 1em; /* Adjust this value to control the maximum height */
+  overflow: hidden;
+  text-overflow: ellipsis; /* Add an ellipsis (...) if the text overflows */
+  white-space: normal;
+  word-wrap: break-word;
+}
+
+
+
+

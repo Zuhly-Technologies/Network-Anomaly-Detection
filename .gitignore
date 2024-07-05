@@ -7,6 +7,12 @@ __pycache__/
 CSVs
 all_data.csv
 all_data_default.csv
+node_modules
+results
+feature_pics
+attacks
+importance_list_all_data.csv
+importance_list_for_attack_files.csv
 
 # C extensions
 *.so
