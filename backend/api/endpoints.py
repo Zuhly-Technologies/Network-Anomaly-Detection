@@ -15,6 +15,8 @@ import random
 import os
 from attack_metrics import AttackMetrics
 from all_metrics import AllMetrics
+from preprocess_sample import SampleDataset
+from feature_selection import AttackFilter, FeatureSelectionAttack, FeatureSelectionAllData
 
 # Load environment variables from .env file
 load_dotenv()
@@ -111,6 +113,45 @@ class GetAllMetrics(Resource):
             connection.close()
 
             return all_data_df.to_dict(orient='records')
+        
+        except:
+
+            return Response(status = 400)
+        
+#//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+class Sampledataset(Resource):
+
+    def get(self, sample_size):
+
+        try:
+        
+            SampleDataset(int(sample_size))
+            return Response(status = 200)
+        
+        except:
+
+            return Response(status = 400)
+
+#//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+class FeatureSelection(Resource):
+
+    def get(self, target_feature):
+
+        try:
+            
+            AttackFilter()
+
+            if target_feature == "attack":
+
+                FeatureSelectionAttack()
+                return Response(status = 200)
+
+            else:
+
+                FeatureSelectionAllData()
+                return Response(status = 200)
         
         except:
 
