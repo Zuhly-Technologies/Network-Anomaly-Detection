@@ -145,10 +145,14 @@ class FeatureSelection(Resource):
 
             if target_feature == "attack":
 
+                print("\nRunning Feature Selection for Attacks...")
+
                 FeatureSelectionAttack()
                 return Response(status = 200)
 
             else:
+
+                print("\nRunning Feature Selection for All Data...")
 
                 FeatureSelectionAllData()
                 return Response(status = 200)
