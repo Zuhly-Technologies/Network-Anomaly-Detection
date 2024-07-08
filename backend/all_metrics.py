@@ -1,7 +1,7 @@
 from sklearn import metrics
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis as QDA
 from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
-from sklearn.metrics import f1_score, recall_score, precision_score
+from sklearn.metrics import f1_score, recall_score, precision_score, roc_curve
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
@@ -47,6 +47,14 @@ def folder(f_name):
     except OSError:
         print("The folder could not be created!")
 
+def calculate_optimal_threshold(predict_proba, y_test):
+    thresholds = np.arange(0.0, 1.0, 0.01)
+    # thresholds = np.arange(0.5)
+    f1_scores = [f1_score(y_test, (predict_proba >= t).astype(int)) for t in thresholds]
+    optimal_idx = np.argmax(f1_scores)
+    optimal_threshold = thresholds[optimal_idx]
+    return optimal_threshold, f1_scores[optimal_idx]
+
 def AllMetrics():
 
     folder_name = "./results/"
@@ -73,10 +81,10 @@ def AllMetrics():
 
     with open(result, "w", newline="", encoding="utf-8") as f:
         wrt = csv.writer(f)
-        wrt.writerow(["File", "ML algorithm", "accuracy", "Precision", "Recall", "F1-score", "Time"])
+        wrt.writerow(["File", "ML algorithm", "accuracy", "Precision", "Recall", "F1-score", "Time", "Optimal Threshold", "F1-score at Optimal Threshold"])
 
     def process_file(j):
-        print('%-17s %-17s  %-15s %-15s %-15s %-15s %-15s' % ("File","ML algorithm","accuracy","Precision", "Recall" , "F1-score","Time"))
+        print('%-17s %-17s  %-15s %-15s %-15s %-15s %-15s %-20s %-25s' % ("File","ML algorithm","accuracy","Precision", "Recall" , "F1-score","Time", "Optimal Threshold", "F1-score at Optimal Threshold"))
         feature_list = list(features[j[0:-4]])
         
         # Dask
@@ -95,29 +103,38 @@ def AllMetrics():
                 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=repetition)
                 clf = ml_list[ii]
                 clf.fit(X_train, y_train)
-                predict = clf.predict(X_test)
-                f_1 = f1_score(y_test, predict, average='macro')
+                predict_proba = clf.predict_proba(X_test)[:, 1]
+
+                # Calculate F1-score for default threshold (0.5)
+                predict = (predict_proba >= 0.5).astype(int)
+                f_1_default = f1_score(y_test, predict, average='macro')
                 pr = precision_score(y_test, predict, average='macro')
                 rc = recall_score(y_test, predict, average='macro')
-                return clf.score(X_test, y_test), pr, rc, f_1, time.time() - second
+
+                # Calculate optimal threshold using F1-score
+                optimal_threshold, f_1_optimal = calculate_optimal_threshold(predict_proba, y_test)
+
+                return clf.score(X_test, y_test), pr, rc, f_1_default, time.time() - second, optimal_threshold, f_1_optimal
 
             # Limit the number of parallel jobs to manage memory usage
             scores = Parallel(n_jobs=4)(delayed(run_model)(i) for i in range(repetition))
-            accuracy, precision, recall, f1, t_time = zip(*scores)
+            accuracy, precision, recall, f1_default, t_time, optimal_threshold, f1_optimal = zip(*scores)
 
             avg_accuracy = np.mean(accuracy)
             avg_precision = np.mean(precision)
             avg_recall = np.mean(recall)
-            avg_f1 = np.mean(f1)
+            avg_f1_default = np.mean(f1_default)
             avg_time = np.mean(t_time)
+            avg_optimal_threshold = np.mean(optimal_threshold)
+            avg_f1_optimal = np.mean(f1_optimal)
 
-            results.append([j[0:-4], ii, round(avg_accuracy, 3), round(avg_precision, 3), round(avg_recall, 3), round(avg_f1, 3), round(avg_time, 3)])
+            results.append([j[0:-4], ii, round(avg_accuracy, 3), round(avg_precision, 3), round(avg_recall, 3), round(avg_f1_default, 3), round(avg_time, 3), round(avg_optimal_threshold, 3), round(avg_f1_optimal, 3)])
 
-            print('%-17s %-17s  %-15s %-15s %-15s %-15s %-15s' % (j[0:-4], ii, round(avg_accuracy, 3), round(avg_precision, 3), 
-                round(avg_recall, 3), round(avg_f1, 3), round(avg_time, 3)))
+            print('%-17s %-17s  %-15s %-15s %-15s %-15s %-15s %-20s %-25s' % (j[0:-4], ii, round(avg_accuracy, 3), round(avg_precision, 3), 
+                round(avg_recall, 3), round(avg_f1_default, 3), round(avg_time, 3), round(avg_optimal_threshold, 3), round(avg_f1_optimal, 3)))
 
         if results:
-            df_results = pd.DataFrame(results, columns=["Attack", "ML algorithm", "accuracy", "Precision", "Recall", "F1-score", "Time"])
+            df_results = pd.DataFrame(results, columns=["Attack", "ML algorithm", "accuracy", "Precision", "Recall", "F1-score", "Time", "Optimal Threshold", "F1-score at Optimal Threshold"])
             df_results.to_sql("all_data", engine, if_exists='replace', index=False)
 
             with open(result, "a", newline="", encoding="utf-8") as f:
@@ -138,3 +155,5 @@ def AllMetrics():
         process_file(j)
 
     print("Total operation time: = ", time.time() - seconds, "seconds")
+
+

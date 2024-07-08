@@ -1,8 +1,7 @@
 from sklearn import metrics
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis as QDA
-from sklearn.ensemble import ExtraTreesClassifier
 from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
-from sklearn.metrics import average_precision_score, confusion_matrix, f1_score, recall_score, precision_score
+from sklearn.metrics import average_precision_score, confusion_matrix, f1_score, recall_score, precision_score, roc_auc_score
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
@@ -48,6 +47,13 @@ def folder(f_name): # this function creates a folder named "results" and "result
 def format_table_name(name):
     return name.lower().replace(" ", "_").replace("-", "_")
 
+def find_optimal_threshold(y_true, y_pred_prob):
+    thresholds = np.linspace(0, 1, 100)
+    # thresholds = np.arange(0.0, 1.0, 0.01)
+    f1_scores = [f1_score(y_true, y_pred_prob >= t) for t in thresholds]
+    optimal_idx = np.argmax(f1_scores)
+    return thresholds[optimal_idx], f1_scores[optimal_idx]
+
 def AttackMetrics():
 
     folder_name = "./results/"
@@ -87,7 +93,7 @@ def AttackMetrics():
 
     with open(result, "w", newline="", encoding="utf-8") as f: # a CSV file is created to save the results obtained.
         wrt = csv.writer(f)
-        wrt.writerow(["File", "ML algorithm", "accuracy", "Precision", "Recall", "F1-score", "Time"])
+        wrt.writerow(["File", "ML algorithm", "accuracy", "Precision", "Recall", "F1-score", "Time", "Optimal Threshold", "F1-score at Optimal Threshold"])
 
     for j in csv_files: # this loop runs on the list containing the filenames. Operations are repeated for all attack files
         print('%-17s %-17s  %-15s %-15s %-15s %-15s %-15s' % ("File", "ML algorithm", "accuracy", "Precision", "Recall", "F1-score", "Time")) # print output header
@@ -117,6 +123,9 @@ def AttackMetrics():
             f1 = []
             accuracy = []
             t_time = []
+            opt_thresholds = []
+            f1_opt_thresholds = []
+
             for i in range(repetition): # This loop allows cross-validation and machine learning algorithm to be repeated 10 times
                 second = time.time() # time stamp for processing time
 
@@ -139,9 +148,15 @@ def AttackMetrics():
                 # machine learning algorithm is applied in this section
                 clf = ml_list[ii] # choose algorithm from ml_list dictionary                                                                          
                 clf.fit(X_train, y_train)
+                predict_proba = clf.predict_proba(X_test)[:, 1]  # Probabilities for the positive class
                 predict = clf.predict(X_test)
             
-                # makes "classification report" and assigns the precision, f-measure, and recall values.s.    
+                # Calculate optimal threshold and corresponding F1-score
+                opt_threshold, f1_opt = find_optimal_threshold(y_test, predict_proba)
+                opt_thresholds.append(opt_threshold)
+                f1_opt_thresholds.append(f1_opt)
+
+                # Calculate metrics at default threshold
                 f_1 = f1_score(y_test, predict, average='macro')
                 pr = precision_score(y_test, predict, average='macro')
                 rc = recall_score(y_test, predict, average='macro')
@@ -158,14 +173,16 @@ def AttackMetrics():
                 avg_recall = np.mean(recall)
                 avg_f1 = np.mean(f1)
                 avg_time = np.mean(t_time)
+                avg_opt_threshold = np.mean(opt_thresholds)
+                avg_f1_opt_threshold = np.mean(f1_opt_thresholds)
 
-                results.append([j[0:-4], ii, avg_accuracy, avg_precision, avg_recall, avg_f1, avg_time])
+                results.append([j[0:-4], ii, avg_accuracy, avg_precision, avg_recall, avg_f1, avg_time, avg_opt_threshold, avg_f1_opt_threshold])
                 
                 print('%-17s %-17s  %-15s %-15s %-15s %-15s %-15s' % (j[0:-4], ii, str(round(avg_accuracy, 2)), str(round(avg_precision, 2)), 
                     str(round(avg_recall, 2)), str(round(avg_f1, 2)), str(round(avg_time, 4)))) # the result of the ten repetitions is printed on the screen
 
         if results:
-            df_results = pd.DataFrame(results, columns=["Attack", "ML algorithm", "accuracy", "Precision", "Recall", "F1-score", "Time"])
+            df_results = pd.DataFrame(results, columns=["Attack", "ML algorithm", "accuracy", "Precision", "Recall", "F1-score", "Time", "Optimal Threshold", "F1-score at Optimal Threshold"])
             df_results = df_results.round(3)  # Round all values to 3 decimal places
             table_name = format_table_name(j[0:-4])  # Format the table name
             df_results.to_sql(table_name, engine, if_exists='replace', index=False)

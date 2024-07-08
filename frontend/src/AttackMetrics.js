@@ -87,6 +87,7 @@ const AttackMetrics = () => {
     "Precision",
     "Recall",
     "F1-score",
+    "Optimal Threshold",
   ];
 
   return (

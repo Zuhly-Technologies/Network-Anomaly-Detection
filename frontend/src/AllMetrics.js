@@ -87,6 +87,7 @@ const AllMetrics = () => {
     "Precision",
     "Recall",
     "F1-score",
+    "Optimal Threshold",
   ];
 
   return (
