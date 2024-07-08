@@ -140,20 +140,18 @@ class FeatureSelection(Resource):
     def get(self, target_feature):
 
         try:
-            
-            AttackFilter()
 
             if target_feature == "attack":
 
-                print("\nRunning Feature Selection for Attacks...")
+                AttackFilter()
 
+                print("\nRunning Feature Selection for Attacks...")
                 FeatureSelectionAttack()
                 return Response(status = 200)
 
             else:
 
                 print("\nRunning Feature Selection for All Data...")
-
                 FeatureSelectionAllData()
                 return Response(status = 200)
         
