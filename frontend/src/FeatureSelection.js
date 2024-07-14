@@ -95,6 +95,12 @@ const FeatureSelection = () => {
           <li className="nav-item" onClick={() => navigate("/")}>
             Attack-Metrics
           </li>
+          <li
+            className="nav-item"
+            onClick={() => navigate("/all_data_predictions")}
+          >
+            Predictions
+          </li>
           <li className="nav-item" onClick={() => navigate("/all_metrics")}>
             All-Metrics
           </li>

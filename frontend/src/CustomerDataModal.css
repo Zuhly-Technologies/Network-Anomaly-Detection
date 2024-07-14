@@ -1,0 +1,68 @@
+/* .list-container {
+    padding: 10px;
+    max-height: 700px;
+    overflow-y: auto;
+  }
+  
+  .list-item {
+    border-bottom: 1px solid #ddd;
+    padding: 10px 0;
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .list-item-field {
+    flex: 1 1 100%;
+    padding: 5px;
+  }
+  
+  .list-item-field strong {
+    margin-right: 5px;
+  }
+   */
+
+   .list-container {
+    padding: 20px;
+    max-height: 700px; /* Adjust max-height to fit better */
+    overflow-y: auto;
+    background-color: #f9f9f9; /* Light background for better readability */
+    border-radius: 8px; /* Rounded corners */
+  }
+  
+  .list-item {
+    border-bottom: 1px solid #ddd;
+    padding: 10px 0;
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 10px; /* Space between items */
+  }
+  
+  .list-item-field {
+    flex: 1 1 100%;
+    padding: 5px;
+    font-size: 22px; /* Adjusted font size */
+  }
+  
+  .list-item-field strong {
+    margin-right: 5px;
+    color: #333; /* Darker color for labels */
+  }
+  
+  .dialog-actions {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background-color: #f1f1f1; /* Light background for the actions section */
+    border-top: 1px solid #ddd; /* Top border for separation */
+    border-radius: 0 0 8px 8px; /* Rounded corners at the bottom */
+    font-size: 50px
+  }
+  
+  .dialog-actions .MuiButton-root {
+    font-size: 14px; /* Adjust button font size */
+  }
+  
+  .dialog-actions .MuiFormControlLabel-root {
+    margin-right: 20px; /* Space between checkbox and buttons */
+  }
+  

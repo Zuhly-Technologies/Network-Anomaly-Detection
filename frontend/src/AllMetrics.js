@@ -115,6 +115,12 @@ const AllMetrics = () => {
           <li className="nav-item" onClick={() => navigate("/")}>
             Attack-Metrics
           </li>
+          <li
+            className="nav-item"
+            onClick={() => navigate("/all_data_predictions")}
+          >
+            Predictions
+          </li>
           <li className="nav-item">All Metrics</li>
         </ul>
       </nav>

@@ -13,8 +13,8 @@ import sklearn
 import re
 import random
 import os
-from attack_metrics import AttackMetrics
-from all_metrics import AllMetrics
+from attack_metrics import AttackMetrics, get_predictions_dataset
+from all_metrics import AllMetrics, GetAllDataPredictions
 from preprocess_sample import SampleDataset
 from feature_selection import AttackFilter, FeatureSelectionAttack, FeatureSelectionAllData
 
@@ -36,6 +36,7 @@ class GenerateAttackMetrics(Resource):
 
         try:
 
+            # get_predictions_dataset()
             AttackMetrics()
             return Response(status = 200)
         
@@ -91,8 +92,9 @@ class GenerateAllMetrics(Resource):
     def get(self):
 
         try:
-            
-            AllMetrics()
+
+            GetAllDataPredictions()
+            # AllMetrics()
             return Response(status = 200)
         
         except:
@@ -133,8 +135,6 @@ class Sampledataset(Resource):
 
             return Response(status = 400)
 
-#//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 class FeatureSelection(Resource):
 
     def get(self, target_feature):
@@ -158,6 +158,142 @@ class FeatureSelection(Resource):
         except:
 
             return Response(status = 400)
+        
+#//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+class GenerateAllDataPredictions(Resource):
+
+    def get(self):
+
+        try:
+            
+            GetAllDataPredictions()
+            return Response(status = 200)
+        
+        except:
+
+            return Response(status = 404)
+
+class GetAllPredictions(Resource):
+
+    def get(self, limit, page):
+
+        engine = create_engine(connect)
+        connection = engine.connect()        
+
+        try:
+
+            limit=int(limit)
+            page=int(page)
+            start=(page*limit)-limit
+
+            result_df= pd.read_sql('SELECT * FROM all_data_predictions LIMIT '+str(limit)+' OFFSET '+str(start), engine)
+            
+            result_df= result_df.to_json(orient='records')
+
+            connection.close()
+            return result_df
+
+        except:
+
+            return make_response(400)
+        
+#//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+class GetTotalPages(Resource):
+    
+        def get(self, limit, table):
+
+            engine = create_engine(connect)
+            connection = engine.connect() 
+
+            if table == 1:
+        
+                count_query = text("SELECT COUNT(*) FROM all_data_predictions")
+                count = connection.execute(count_query).scalar()
+
+                total_pages = math.ceil(count / int(limit))
+
+                response={
+                    "total_pages": total_pages
+                }
+
+                connection.close()
+                return jsonify(response)
+                    
+            elif table == 2:
+
+                count_query = text("SELECT COUNT(*) FROM model_predictions")
+                count = connection.execute(count_query).scalar()
+
+                total_pages = math.ceil(count / int(limit))
+
+                response={
+                    "total_pages": total_pages
+                }
+
+                connection.close()
+                return jsonify(response)
+            
+            elif table == 3:
+        
+                count_query = text("SELECT COUNT(*) FROM customer_profile")
+                count = connection.execute(count_query).scalar()
+
+                total_pages = math.ceil(count / int(limit))
+
+                response={
+                    "total_pages": total_pages
+                }
+
+                connection.close()
+                return jsonify(response)
+                    
+            elif table == 4:
+
+                count_query = text("SELECT COUNT(*) FROM terminal_profile")
+                count = connection.execute(count_query).scalar()
+
+                total_pages = math.ceil(count / int(limit))
+
+                response={
+                    "total_pages": total_pages
+                }
+
+                connection.close()
+                return jsonify(response)
+            
+            elif table == 5:
+
+                count_query = text("SELECT COUNT(*) FROM threshold_based_metrics")
+                count = connection.execute(count_query).scalar()
+
+                total_pages = math.ceil(count / int(limit))
+
+                response={
+                    "total_pages": total_pages
+                }
+
+                connection.close()
+                return jsonify(response)
+
+            elif table == 6:
+
+                count_query = text("SELECT COUNT(*) FROM threshold_free_metrics")
+                count = connection.execute(count_query).scalar()
+
+                total_pages = math.ceil(count / int(limit))
+
+                response={
+                    "total_pages": total_pages
+                }
+
+                connection.close()
+                return jsonify(response)
+            
+            else:
+                
+                connection.close()
+                return make_response(400)
 
 

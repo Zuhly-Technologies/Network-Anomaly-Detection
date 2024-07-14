@@ -32,6 +32,11 @@ CORS(app, resources={
 
     r"/sample_dataset/*": {"origins": "*"},
 
+    r"/generate_all_data_predictions": {"origins": "*"},
+    r"/get_all_predictions/*": {"origins": "*"},
+
+    r"/getall_pages/*": {"origins": "*"},
+
 })
 
 app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://"+usr+":"+password+"@"+host+":"+port+"/"+database
