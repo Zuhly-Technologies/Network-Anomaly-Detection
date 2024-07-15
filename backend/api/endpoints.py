@@ -1,7 +1,8 @@
 from flask_restful import Resource
 from flask import request,abort, Response, make_response, jsonify, send_from_directory
 from initialize import db
-from sqlalchemy import create_engine, text, inspect, desc
+from sqlalchemy import create_engine, text, inspect, desc, Table, MetaData, update
+from sqlalchemy.orm import sessionmaker
 import pandas as pd
 from dotenv import load_dotenv
 import psycopg2
@@ -93,8 +94,8 @@ class GenerateAllMetrics(Resource):
 
         try:
 
-            GetAllDataPredictions()
-            # AllMetrics()
+            # GetAllDataPredictions()
+            AllMetrics()
             return Response(status = 200)
         
         except:
@@ -227,6 +228,8 @@ class ModifyLabel(Resource):
         attack_value = 1 if label_str == "true" else 0
         predictions_df.loc[predictions_df['index'] == id, 'Label'] = attack_value
 
+        print("CLEARED")
+
         drop_table_query = text('DROP TABLE IF EXISTS all_data_predictions')
         connection.execute(drop_table_query)
         connection.commit()
@@ -236,13 +239,31 @@ class ModifyLabel(Resource):
             con=engine,
             index=False,
             if_exists='replace',
-            chunksize=50000
+            chunksize=70000
         )
         
         connection.close()
         
         return Response(status=200)
+
+# class ModifyLabel(Resource):
     
+#     def get(self, id, label):
+#         label_str = str(label).lower()
+
+#         engine = create_engine(connect)
+#         connection = engine.connect()
+        
+#         attack_value = 1 if label_str == "true" else 0
+
+#         # Update the single row in the database
+#         update_query = text('UPDATE all_data_predictions SET "Label" = :attack_value WHERE "index" = :id')
+#         connection.execute(update_query, {'attack_value': attack_value, 'id': id})
+        
+#         connection.commit()
+#         connection.close()
+        
+#         return Response(status=200)
 class GetFilteredPredictions(Resource):
 
     def get(self, column, operator, value):
