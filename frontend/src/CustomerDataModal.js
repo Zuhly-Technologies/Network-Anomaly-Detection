@@ -22,23 +22,42 @@ export default function CustomerDataModal({
 }) {
   const [slicedRows, setSlicedRows] = useState([]);
   const [isChecked, setIsChecked] = useState({
-    fraudulent: false,
+    attack: false,
     benign: false,
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const columns = [
-    "CUSTOMER_ID",
-    "Name",
-    "Email",
-    "x_customer_id",
-    "y_customer_id",
-    "mean_amount",
-    "std_amount",
-    "mean_nb_tx_per_day",
+    "index",
+    "Flow Duration",
+    "Total Fwd Packets",
+    "Total Backward Packets",
+    "Total Length of Fwd Packets",
+    "Total Length of Bwd Packets",
+    "Fwd Packet Length Max",
+    "Fwd Packet Length Min",
+    "Fwd Packet Length Mean",
+    "Fwd Packet Length Std",
+    "Bwd Packet Length Max",
+    "Bwd Packet Length Mean",
+    "Bwd Packet Length Std",
+    "Flow Bytes/s",
+    "Flow IAT Mean",
+    "Flow IAT Std",
+    "Flow IAT Max",
+    "Flow IAT Min",
+    "Fwd IAT Total",
+    "Label",
+    "Naive Bayes",
+    "QDA",
+    "Random Forest",
+    "ID3",
   ];
 
   const handleClose = () => {
-    setOpen(false);
+    if (!isSubmitting) {
+      setOpen(false);
+    }
   };
 
   useEffect(() => {
@@ -46,22 +65,25 @@ export default function CustomerDataModal({
   }, [rows]);
 
   const handleCheckboxChange = (label) => {
-    if (label === "fraudulent") {
+    if (label === "attack") {
       setIsChecked({
-        fraudulent: true,
+        attack: true,
         benign: false,
       });
     } else {
       setIsChecked({
-        fraudulent: false,
+        attack: false,
         benign: true,
       });
     }
   };
 
   const handleSubmit = async () => {
-    const { fraudulent } = isChecked;
-    const flag = fraudulent ? "True" : "False";
+    setIsSubmitting(true);
+    const { attack } = isChecked;
+    const flag = attack ? "True" : "False";
+    console.log(txId);
+    console.log(transactionId);
     const response = await fetch(
       `http://127.0.0.1:5000/modify_label/${txId}/${flag}`,
       {
@@ -94,37 +116,77 @@ export default function CustomerDataModal({
         {slicedRows?.map((d, index) => (
           <div className="list-item" key={index}>
             <div className="list-item-field">
-              <strong>Customer Id:</strong> {d[columns[0]]}
+              <strong>Id:</strong> {d[columns[0]]}
             </div>
             <div className="list-item-field">
-              <strong>Name:</strong> {d[columns[1]]}
+              <strong>Flow Duration:</strong> {d[columns[1]]}
             </div>
             <div className="list-item-field">
-              <strong>Email:</strong> {d[columns[2]]}
+              <strong>Total Fwd Packets:</strong> {d[columns[2]]}
             </div>
             <div className="list-item-field">
-              <strong>Customer x-cor:</strong> {d[columns[3]]}
+              <strong>Total Backward Packets:</strong> {d[columns[3]]}
             </div>
             <div className="list-item-field">
-              <strong>Customer y-cor:</strong> {d[columns[4]]}
+              <strong>Total Length of Fwd Packets:</strong> {d[columns[4]]}
             </div>
             <div className="list-item-field">
-              <strong>Mean Amount:</strong> {d[columns[5]]}
+              <strong>Total Length of Bwd Packets:</strong> {d[columns[5]]}
             </div>
             <div className="list-item-field">
-              <strong>STD Amount:</strong> {d[columns[6]]}
+              <strong>Fwd Packet Length Max:</strong> {d[columns[6]]}
             </div>
             <div className="list-item-field">
-              <strong>Mean TX/Day:</strong> {d[columns[7]]}
+              <strong>Fwd Packet Length Min:</strong> {d[columns[7]]}
             </div>
             <div className="list-item-field">
-              <strong>Terminal Id:</strong> {TerminalId}
+              <strong>Fwd Packet Length Mean:</strong> {d[columns[8]]}
             </div>
             <div className="list-item-field">
-              <strong>Amount:</strong> {amount}
+              <strong>Fwd Packet Length Std:</strong> {d[columns[9]]}
             </div>
             <div className="list-item-field">
-              <strong>Fraud:</strong> {fraud}
+              <strong>Bwd Packet Length Max:</strong> {d[columns[10]]}
+            </div>
+            <div className="list-item-field">
+              <strong>Bwd Packet Length Mean:</strong> {d[columns[11]]}
+            </div>
+            <div className="list-item-field">
+              <strong>Bwd Packet Length Std:</strong> {d[columns[12]]}
+            </div>
+            <div className="list-item-field">
+              <strong>Flow Bytes/s:</strong> {d[columns[13]]}
+            </div>
+            <div className="list-item-field">
+              <strong>Flow IAT Mean:</strong> {d[columns[14]]}
+            </div>
+            <div className="list-item-field">
+              <strong>Flow IAT Std:</strong> {d[columns[15]]}
+            </div>
+            <div className="list-item-field">
+              <strong>Flow IAT Max:</strong> {d[columns[16]]}
+            </div>
+            <div className="list-item-field">
+              <strong>Flow IAT Min:</strong> {d[columns[17]]}
+            </div>
+            <div className="list-item-field">
+              <strong>Fwd IAT Total:</strong> {d[columns[18]]}
+            </div>
+            <div className="list-item-field">
+              <strong>Label:</strong> {d[columns[19]]}
+            </div>
+            {/* <div className="list-item-field">
+              <strong>Naive Bayes:</strong> {d[columns[20]]}
+            </div>
+            <div className="list-item-field">
+              <strong>QDA:</strong> {d[columns[21]]}
+            </div> */}
+            <div className="list-item-field">
+              <strong>Attack Probability (Random Forest):</strong>{" "}
+              {d[columns[22]]}
+            </div>
+            <div className="list-item-field">
+              <strong>Attack Probability (ID3):</strong> {d[columns[23]]}
             </div>
           </div>
         ))}
@@ -133,12 +195,12 @@ export default function CustomerDataModal({
         <FormControlLabel
           control={
             <Checkbox
-              checked={isChecked.fraudulent}
-              onChange={() => handleCheckboxChange("fraudulent")}
+              checked={isChecked.attack}
+              onChange={() => handleCheckboxChange("attack")}
               color="primary"
             />
           }
-          label="Fraudulent"
+          label="Attack"
         />
         <FormControlLabel
           control={
@@ -150,10 +212,12 @@ export default function CustomerDataModal({
           }
           label="Benign"
         />
-        <Button onClick={handleSubmit} autoFocus>
-          Submit
+        <Button onClick={handleSubmit} autoFocus disabled={isSubmitting}>
+          {isSubmitting ? "Modifying..." : "Submit"}
         </Button>
-        <Button onClick={handleClose}>Close</Button>
+        <Button onClick={handleClose} disabled={isSubmitting}>
+          Close
+        </Button>
       </DialogActions>
     </Dialog>
   );

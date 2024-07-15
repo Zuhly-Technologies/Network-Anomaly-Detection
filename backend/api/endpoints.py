@@ -198,6 +198,51 @@ class GetAllPredictions(Resource):
 
             return make_response(400)
         
+class GetModalData(Resource):
+
+    def get(self, id):
+        
+        engine = create_engine(connect)
+        connection = engine.connect()
+        
+        customer_df = pd.read_sql('SELECT * FROM all_data_predictions', connection)
+        customer_df = customer_df[customer_df['index'] == int(id)]
+        customer_json = customer_df.to_json(orient='records')
+        
+        connection.close()
+
+        return customer_json
+        
+class ModifyLabel(Resource):
+    
+    def get(self, id, label):
+
+        label_str = str(label).lower()
+
+        engine = create_engine(connect)
+        connection = engine.connect()
+        
+        predictions_df = pd.read_sql('SELECT * FROM all_data_predictions', connection)
+        
+        attack_value = 1 if label_str == "true" else 0
+        predictions_df.loc[predictions_df['index'] == id, 'Label'] = attack_value
+
+        drop_table_query = text('DROP TABLE IF EXISTS all_data_predictions')
+        connection.execute(drop_table_query)
+        connection.commit()
+
+        predictions_df.to_sql(
+            'all_data_predictions',
+            con=engine,
+            index=False,
+            if_exists='replace',
+            chunksize=50000
+        )
+        
+        connection.close()
+        
+        return Response(status=200)
+        
 #//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 class GetTotalPages(Resource):

@@ -299,7 +299,7 @@ def GetAllDataPredictions():
 
     def process_file(j):
         nonlocal all_probabilities, test_data, test_labels  # Declare nonlocal variable to modify it inside the nested function
-        print('%-17s %-17s  %-15s %-15s %-15s %-15s %-15s %-20s %-25s' % ("File","ML algorithm","accuracy","Precision", "Recall" , "F1-score","Time", "Optimal Threshold", "F1-score at Optimal Threshold"))
+        # print('%-17s %-17s  %-15s %-15s %-15s %-15s %-15s %-20s %-25s' % ("File","ML algorithm","accuracy","Precision", "Recall" , "F1-score","Time", "Optimal Threshold", "F1-score at Optimal Threshold"))
         feature_list = list(features[j[0:-4]])
         
         # Dask

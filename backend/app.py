@@ -32,10 +32,13 @@ CORS(app, resources={
 
     r"/sample_dataset/*": {"origins": "*"},
 
+    r"/getall_pages/*": {"origins": "*"},
+
     r"/generate_all_data_predictions": {"origins": "*"},
     r"/get_all_predictions/*": {"origins": "*"},
+    r"/modify_label/*": {"origins": "*"},
+    r"/modal_data/*": {"origins": "*"},
 
-    r"/getall_pages/*": {"origins": "*"},
 
 })
 

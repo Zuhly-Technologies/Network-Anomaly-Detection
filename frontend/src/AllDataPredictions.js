@@ -174,13 +174,11 @@ const AllDataPredictions = () => {
     }
     if (column === 4) {
       setOpenModal(true);
-      res = await fetch(`${config.apiUrl}/customer_data/${id}`);
+      res = await fetch(`${config.apiUrl}/modal_data/${id}`);
       res = await res.json();
       setCustomerData(JSON.parse(res));
-      setTransactionId(txId);
+      setTransactionId(id);
       setTerminalId(TerminalId);
-      setAmount(amount);
-      setFraud(fraud);
     }
   };
 
@@ -420,7 +418,7 @@ const AllDataPredictions = () => {
         <table>
           <thead>
             <tr>
-              <th>Index</th>
+              <th>Id</th>
               <th>Flow Duration</th>
               <th>Total Fwd Packets</th>
               <th>Total Backward Packets</th>
@@ -458,16 +456,7 @@ const AllDataPredictions = () => {
                   {/* <td>{d[columns[0]]}</td> */}
                   <td
                     className="link"
-                    onClick={() =>
-                      handleOpenModal(
-                        d[columns[2]],
-                        4,
-                        d[columns[0]],
-                        d[columns[3]],
-                        d[columns[4]],
-                        d[columns[8]]
-                      )
-                    }
+                    onClick={() => handleOpenModal(d[columns[0]], 4)}
                   >
                     {d[columns[0]]}
                   </td>
@@ -514,12 +503,6 @@ const AllDataPredictions = () => {
         setRows={setCustomerData}
         txId={transactionId}
         transactionId={setTransactionId}
-        TerminalId={terminalId}
-        terminalId={setTerminalId}
-        amount={Amount}
-        Amount={setAmount}
-        fraud={Fraud}
-        Fraud={setFraud}
       />
     </div>
   );
