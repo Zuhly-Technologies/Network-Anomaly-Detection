@@ -211,7 +211,6 @@ def AllMetrics():
             def run_model(i):
                 second = time.time()
                 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=repetition)
-                print(X_test)
                 clf = ml_list[ii]
                 clf.fit(X_train, y_train)
                 predict_proba = clf.predict_proba(X_test)[:, 1]
@@ -270,14 +269,6 @@ def AllMetrics():
 
     print("Total operation time: = ", time.time() - seconds, "seconds")
 
-    # Concatenate the test_data and all_probabilities DataFrames
-    # final_data = pd.concat([test_data.reset_index(drop=True), all_probabilities.reset_index(drop=True)], axis=1)
-
-    # print(final_data)
-
-    # Save final data to a CSV file
-    # final_data.to_sql("all_data_predictions", engine, if_exists='replace', index=False, chunksize=70000)
-
 
 def GetAllDataPredictions():
 
@@ -323,7 +314,7 @@ def GetAllDataPredictions():
         X_Train, X_Test, y_Train, y_Test = train_test_split(X, y, test_size=0.20, random_state=repetition)
         test_data = X_Test
         test_labels["Label"] = y_Test
-        print(y_Test,"\n////////////////////////////////////////////////////////////////////")
+        # print(y_Test,"\n////////////////////////////////////////////////////////////////////")
 
         results = []
 
@@ -331,37 +322,22 @@ def GetAllDataPredictions():
             def run_model(i):
                 second = time.time()
                 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=repetition)
-                print(X_test)
+                # print(X_train.columns)
                 clf = ml_list[ii]
                 clf.fit(X_train, y_train)
                 predict_proba = clf.predict_proba(X_test)[:, 1]
 
-                # Calculate F1-score for default threshold (0.5)
-                predict = (predict_proba >= 0.5).astype(int)
-                f_1_default = f1_score(y_test, predict, average='macro')
-                pr = precision_score(y_test, predict, average='macro')
-                rc = recall_score(y_test, predict, average='macro')
-
-                # Calculate optimal threshold using F1-score
-                optimal_threshold, f_1_optimal = calculate_optimal_threshold(predict_proba, y_test)
-
-                return clf.score(X_test, y_test), pr, rc, f_1_default, time.time() - second, optimal_threshold, f_1_optimal, predict_proba
+                return predict_proba
 
             # Limit the number of parallel jobs to manage memory usage
-            scores = Parallel(n_jobs=5)(delayed(run_model)(i) for i in range(repetition))
+            predict_proba = Parallel(n_jobs=5)(delayed(run_model)(i) for i in range(repetition))
 
-            accuracy, precision, recall, f1_default, t_time, optimal_threshold, f1_optimal, predict_proba = zip(*scores)
-
-            # Stack the predict_proba arrays into a 2D array
             predict_proba = np.vstack(predict_proba)
 
-            # Average the probabilities along the columns
             avg_predict_proba = np.mean(predict_proba, axis=0)
 
-            # Convert averaged probabilities to DataFrame and round to 5 decimal places
             df_avg_proba = pd.DataFrame(avg_predict_proba, columns=[ii]).round(5)
 
-            # Concatenate with all_probabilities DataFrame
             all_probabilities = pd.concat([all_probabilities, df_avg_proba], axis=1)
 
     for j in csv_files:
@@ -369,10 +345,9 @@ def GetAllDataPredictions():
 
     print("Total operation time: = ", time.time() - seconds, "seconds")
 
-    # Concatenate the test_data, test_labels, and all_probabilities DataFrames
-    final_data = pd.concat([test_data.reset_index(drop=False), test_labels.reset_index(drop=False), all_probabilities.reset_index(drop=False)], axis=1)
+    final_data = pd.concat([test_data.reset_index(drop=True), test_labels.reset_index(drop=True), all_probabilities.reset_index(drop=True)], axis=1)
 
-    print(final_data)
+    final_data.reset_index(inplace=True)
 
-    # Save final data to a SQL table
     final_data.to_sql("all_data_predictions", engine, if_exists='replace', index=False, chunksize=70000)
+
