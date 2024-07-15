@@ -28,6 +28,7 @@ const AllDataPredictions = () => {
   const [Fraud, setFraud] = useState("");
 
   const columns = [
+    "index",
     "Flow Duration",
     "Total Fwd Packets",
     "Total Backward Packets",
@@ -270,6 +271,16 @@ const AllDataPredictions = () => {
         >
           {loading ? "Generating..." : "Generate Predictions"}
         </button>
+      </div>
+
+      {/* <div>
+        <button
+          className="stream-button"
+          onClick={handlePrediction}
+          disabled={loading} // Disable the button while loading
+        >
+          {loading ? "Generating..." : "Generate Predictions"}
+        </button>
         <select
           value={sampling}
           onChange={(e) => setSampling(e.target.value)}
@@ -277,14 +288,13 @@ const AllDataPredictions = () => {
           size={1}
         >
           <option value="">Select Sampling</option>
-          {/* <option value="default">default</option> */}
           <option value="none">None</option>
           <option value="smoteenn">SMOTEENN</option>
           <option value="undersample">Undersample</option>
         </select>
-      </div>
+      </div> */}
 
-      <div>
+      {/* <div>
         <button
           className="stream-button"
           onClick={handleSortBy}
@@ -366,7 +376,7 @@ const AllDataPredictions = () => {
           onChange={(e) => setValue(e.target.value)}
           style={{ marginRight: "20px", width: "240px", fontSize: "20px" }}
         />
-      </div>
+      </div> */}
 
       <div>
         <button className="stream-button" onClick={handleFirstPage}>
@@ -410,6 +420,7 @@ const AllDataPredictions = () => {
         <table>
           <thead>
             <tr>
+              <th>Index</th>
               <th>Flow Duration</th>
               <th>Total Fwd Packets</th>
               <th>Total Backward Packets</th>
@@ -441,7 +452,7 @@ const AllDataPredictions = () => {
                 <tr
                   key={i}
                   style={{
-                    color: color(d[columns[18]]),
+                    color: color(d[columns[19]]),
                   }}
                 >
                   {/* <td>{d[columns[0]]}</td> */}
@@ -482,6 +493,7 @@ const AllDataPredictions = () => {
                   <td>{d[columns[20]]}</td>
                   <td>{d[columns[21]]}</td>
                   <td>{d[columns[22]]}</td>
+                  <td>{d[columns[23]]}</td>
                 </tr>
               ))
             ) : (
@@ -494,27 +506,7 @@ const AllDataPredictions = () => {
           </tbody>
         </table>
       </div>
-      <strong style={{ fontSize: "20px" }}>
-        Default: Automatically selects sampling technique based on fraud
-        precentage
-      </strong>
-      <strong style={{ fontSize: "20px" }}>
-        SMOTEENN: A combination of SMOTE (oversampling) and Edited Nearest
-        Neighbor (ENN) method
-      </strong>
-      <strong style={{ fontSize: "20px" }}>
-        Undersample: Randomly delete examples in the majority class from
-        training data.
-      </strong>
-      <strong style={{ fontSize: "20px" }}>
-        None: Does not perform any sampling
-      </strong>
-      {/* <CustomerModal
-        open={open}
-        setOpen={setOpen}
-        rows={CustomerData}
-        setRows={setCustomerData}
-      /> */}
+
       <CustomerDataModal
         open={openModal}
         setOpen={setOpenModal}
