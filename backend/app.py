@@ -52,6 +52,43 @@ connect="postgresql+psycopg2://"+usr+":"+password+"@"+host+":"+port+"/"+database
 engine = create_engine(connect)
 connection = engine.connect()
 
+table_exists_query = text("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'all_data_predictions')")
+table_exists = connection.execute(table_exists_query).scalar()
+
+if not table_exists:
+
+            transactions_df= pd.DataFrame(columns=[ "index",
+                                                    "Flow Duration",
+                                                    "Total Fwd Packets",
+                                                    "Total Backward Packets",
+                                                    "Total Length of Fwd Packets",
+                                                    "Total Length of Bwd Packets",
+                                                    "Fwd Packet Length Max",
+                                                    "Fwd Packet Length Min",
+                                                    "Fwd Packet Length Mean",
+                                                    "Fwd Packet Length Std",
+                                                    "Bwd Packet Length Max",
+                                                    "Bwd Packet Length Mean",
+                                                    "Bwd Packet Length Std",
+                                                    "Flow Bytes/s",
+                                                    "Flow IAT Mean",
+                                                    "Flow IAT Std",
+                                                    "Flow IAT Max",
+                                                    "Flow IAT Min",
+                                                    "Fwd IAT Total",
+                                                    "Label",
+                                                    "Naive Bayes",
+                                                    "QDA",
+                                                    "Random Forest",
+                                                    "ID3",
+                                                 ])
+
+            transactions_df.head(0).to_sql('all_data_predictions', con=engine, index=False, if_exists='replace')
+
+else:
+
+    print (" * predictions table exists...")
+
 if __name__ == '__main__':
     
     app.run(debug=True, host='0.0.0.0', port=server_port)

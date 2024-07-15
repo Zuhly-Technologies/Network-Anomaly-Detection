@@ -242,6 +242,197 @@ class ModifyLabel(Resource):
         connection.close()
         
         return Response(status=200)
+    
+class GetFilteredPredictions(Resource):
+
+    def get(self, column, operator, value):
+
+        engine = create_engine(connect)
+        connection = engine.connect()
+        
+        filtered_df= pd.read_sql('SELECT * FROM all_data_predictions', engine)
+
+        if column == 'TX_CATEGORY':
+
+            filtered_df = filtered_df[filtered_df[column] == value]
+            filtered_df=filtered_df.sort_values('TX_FRAUD',ascending=False)
+
+            drop_table_query = text('DROP TABLE IF EXISTS model_predictions')
+            connection.execute(drop_table_query)
+            connection.commit()
+
+            filtered_df.to_sql(
+
+                            'model_predictions', 
+                            con=engine, 
+                            index=False, 
+                            if_exists='replace'
+                        )
+                    
+            connection.close()
+            return filtered_df.to_json(orient='records')
+
+        elif operator == "=":
+
+            filtered_df = filtered_df[filtered_df[column] == float(value)]
+            filtered_df=filtered_df.sort_values('TX_FRAUD',ascending=False)
+
+            drop_table_query = text('DROP TABLE IF EXISTS model_predictions')
+            connection.execute(drop_table_query)
+            connection.commit()
+
+            filtered_df.to_sql(
+
+                            'model_predictions', 
+                            con=engine, 
+                            index=False, 
+                            if_exists='replace'
+                        )        
+            
+            connection.close()
+            return filtered_df.to_json(orient='records')
+
+        elif operator == "<=":
+
+            filtered_df = filtered_df[filtered_df[column] <= float(value)]
+            filtered_df=filtered_df.sort_values('TX_FRAUD',ascending=False)
+
+            drop_table_query = text('DROP TABLE IF EXISTS model_predictions')
+            connection.execute(drop_table_query)
+            connection.commit()
+
+            filtered_df.to_sql(
+
+                            'model_predictions', 
+                            con=engine, 
+                            index=False, 
+                            if_exists='replace'
+                        )  
+                  
+            connection.close()
+            return filtered_df.to_json(orient='records')
+
+        elif operator == ">=":
+
+            filtered_df = filtered_df[filtered_df[column] >= float(value)]
+            filtered_df=filtered_df.sort_values('TX_FRAUD',ascending=False)
+
+            drop_table_query = text('DROP TABLE IF EXISTS model_predictions')
+            connection.execute(drop_table_query)
+            connection.commit()
+
+            filtered_df.to_sql(
+
+                            'model_predictions', 
+                            con=engine, 
+                            index=False, 
+                            if_exists='replace'
+                        )   
+                 
+            connection.close()
+            return filtered_df.to_json(orient='records')
+
+        elif operator == "<":
+
+            filtered_df = filtered_df[filtered_df[column] < float(value)]
+            filtered_df=filtered_df.sort_values('TX_FRAUD',ascending=False)
+
+            drop_table_query = text('DROP TABLE IF EXISTS model_predictions')
+            connection.execute(drop_table_query)
+            connection.commit()
+
+            filtered_df.to_sql(
+
+                            'model_predictions', 
+                            con=engine, 
+                            index=False, 
+                            if_exists='replace'
+                        )   
+                 
+            connection.close()
+            return filtered_df.to_json(orient='records')
+
+        elif operator == ">":
+
+            filtered_df = filtered_df[filtered_df[column] > float(value)]
+            filtered_df=filtered_df.sort_values('TX_FRAUD',ascending=False)
+
+            drop_table_query = text('DROP TABLE IF EXISTS model_predictions')
+            connection.execute(drop_table_query)
+            connection.commit()
+
+            filtered_df.to_sql(
+
+                            'model_predictions', 
+                            con=engine, 
+                            index=False, 
+                            if_exists='replace'
+                        ) 
+
+            connection.close()
+            return filtered_df.to_json(orient='records')
+
+        else:
+
+            connection.close()
+            return make_response(400)
+        
+class SortPredictions(Resource):
+
+        def get(self, sort):
+
+            engine = create_engine(connect)
+            connection = engine.connect()
+
+            if sort == 'default':
+
+                transactions_df= pd.read_sql('SELECT * FROM model_predictions_default', engine)
+
+                drop_table_query = text('DROP TABLE IF EXISTS model_predictions')
+                connection.execute(drop_table_query)
+                connection.commit() 
+
+                transactions_df.to_sql(
+
+                            'model_predictions', 
+                            con=engine, 
+                            index=False, 
+                            if_exists='replace'
+                        )
+                
+                connection.close()
+                return Response(status = 200)
+
+            else:
+
+                transactions_df= pd.read_sql('SELECT * FROM model_predictions_default', engine)
+                transactions_df=transactions_df.sort_values(str(sort),ascending=False)
+
+                try:
+
+                    drop_table_query = text('DROP TABLE IF EXISTS model_predictions')
+                    connection.execute(drop_table_query)
+                    connection.commit()
+
+                    transactions_df.to_sql(
+
+                                'model_predictions', 
+                                con=engine, 
+                                index=False, 
+                                if_exists='replace'
+                                
+                            )
+                    
+                    connection.close()
+                    
+                except ValueError as error:
+
+                    connection.close()
+                    print(error)
+                    return make_response({"error": str(error)}, 400)
+            
+            
+                return Response(status = 200)
         
 #//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
