@@ -37,6 +37,7 @@ Mac, Ubuntu 12/16 and Kali.
 |PortScan|Flow Bytes/s,Total Length of Fwd Packets, Fwd IAT Total, Flow Duration, Label|
 |SSH-Patator|Fwd Packet Length Max, Flow Duration, Flow IAT Max,Total Length of Fwd Packets, Label|
 |Web Attack|Bwd Packet Length Std, Total Length of Fwd Packets, Flow Bytes/s, Flow IAT Max, Label|
+|All Attacks|Bwd Packet Length Std,Flow Bytes/s,Total Length of Fwd Packets,Fwd Packet Length Std,Flow IAT Std, Flow IAT Min,Fwd IAT Total,Flow Duration,Bwd Packet Length Max,Flow IAT Max,Flow IAT Mean,Total Length of Bwd Packets,Fwd Packet Length Min,Bwd Packet Length Mean,Flow Packets/s,Fwd Packet Length Mean,Total Backward Packets,Total Fwd Packets,Fwd Packet Length Max,Bwd Packet Length Min,Label|
 
 ## Perfromance Metrics
 - **Accuracy**: The ratio of successfully categorized data to total data.
