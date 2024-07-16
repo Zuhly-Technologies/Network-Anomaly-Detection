@@ -94,7 +94,6 @@ class GenerateAllMetrics(Resource):
 
         try:
 
-            # GetAllDataPredictions()
             AllMetrics()
             return Response(status = 200)
         
